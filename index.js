@@ -40,23 +40,23 @@ async function handleEvent(event) {
       messages: [{ type: 'text', text: "笨豬" }],
     });
   }
-  const userId = event.source.userId;
+  const userLineId = event.source.userId;
   // const message = event.message.text.trim();
-  const profile = await client.getProfile(userId);
-  const user = await User.findOne({ userLineId: userId })
+  const profile = await client.getProfile(userLineId);
+  const user = await User.findOne({ userLineId })
   if (user === null) {
     const newUser = new User({
-      userLineId: userId,
+      userLineId,
       userName: profile.displayName,
       avatar: profile.pictureUrl
     })
     await newUser.save()
   }
-  let todoList = await Todo.findOne({ userLineId: userId })
+  let todoList = await Todo.findOne({ userLineId })
   const newTodo = event.message.text.trim();
   if (todoList === null) {
     todoList = new Todo({
-      userId,
+      userLineId,
       list: [{ todo: newTodo }]
     });
   } else {
