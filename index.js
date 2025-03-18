@@ -114,21 +114,6 @@ async function handleEvent(event) {
             wrap: true,
             size: "md"
           }]
-      },
-      footer: {
-        type: "box",
-        layout: "vertical",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            action: {
-              type: "message",
-              label: "新增待辦事項",
-              text: "新增待辦事項"  // 用戶可以點擊這個按鈕來新增待辦事項
-            }
-          }
-        ]
       }
     }
   };
