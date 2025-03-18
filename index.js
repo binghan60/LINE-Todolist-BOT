@@ -2,7 +2,6 @@ import * as line from '@line/bot-sdk'
 import express from 'express'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { type } from 'os';
 
 dotenv.config();
 const config = {
@@ -13,9 +12,6 @@ const client = new line.messagingApi.MessagingApiClient({
 });
 
 const app = express();
-
-// register a webhook handler with middleware
-// about the middleware, please refer to doc
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
@@ -25,25 +21,30 @@ app.post('/webhook', line.middleware(config), (req, res) => {
       res.status(500).end();
     });
 });
-
 // event handler
-function handleEvent(event) {
+async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
     return client.replyMessage({
       replyToken: event.replyToken,
       messages: [{type: 'text', text:"笨豬"}],
     });
   }
+  const userId = event.source.userId;
+  // const message = event.message.text.trim();
+  const profile = await client.getProfile(userId);
+  console.log(profile)
 
-  // create an echoing text message
+
+
   const echo = { type: 'text', text: event.message.text };
-
-  // use reply API
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [echo],
   });
+}
+
+function checkRegister(id){
+
 }
 
 // listen on port
