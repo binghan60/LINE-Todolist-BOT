@@ -13,6 +13,19 @@ const client = new line.messagingApi.MessagingApiClient({
 });
 
 const app = express();
+
+mongoose
+    .connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log('資料庫連線成功');
+    })
+    .catch((err) => {
+        console.log('資料庫連線失敗');
+        console.err(err.message);
+    });
+
+
+
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
@@ -45,7 +58,7 @@ async function handleEvent(event) {
 
 async function checkRegister(id){
   const user = await User.find({userLineId:id})
-console.log(user)
+  console.log(user)
 
 }
 
