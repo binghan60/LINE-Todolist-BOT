@@ -43,7 +43,7 @@ async function handleEvent(event) {
   const userId = event.source.userId;
   // const message = event.message.text.trim();
   const profile = await client.getProfile(userId);
-  const user = await User.findOne({ userLineId: userId })
+  const user = await User.findOne({ userLineId: new mongoose.Types.ObjectId(userId) })
   if (user === null) {
     const newUser = new User({
       userLineId: userId,
