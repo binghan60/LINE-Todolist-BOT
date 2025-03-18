@@ -46,6 +46,8 @@ async function handleEvent(event) {
   const userId = event.source.userId;
   // const message = event.message.text.trim();
   const profile = await client.getProfile(userId);
+  console.log("MMMM")
+
   await checkRegister(userId)
 
 
@@ -57,8 +59,9 @@ async function handleEvent(event) {
 }
 
 async function checkRegister(id){
-  const user = await User.find({userLineId:id})
-  console.log(user)
+  console.log("CHECK")
+  const user = await User.findOne({userLineId:id})
+  console.log({user})
 
 }
 
