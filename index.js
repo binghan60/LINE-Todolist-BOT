@@ -67,44 +67,42 @@ async function handleEvent(event) {
 
   const echo = { type: 'text', text: event.message.text };
   return client.replyMessage(
+    event.replyToken,  // 傳入 replyToken
     {
-      type: "flex",
-      altText: "待辦事項列表",  // 必須提供 altText，這是非 Flex 支援的環境會看到的訊息
+      type: "flex",  // 設定為 flex message 類型
+      altText: "待辦事項列表",  // 提供一個可替代的文字訊息
       contents: {
-        replyToken: event.replyToken,
-        messages: [{
-          "type": "bubble",
-          "header": {
-            "type": "box",
-            "layout": "vertical",
-            "contents": [
-              {
-                "type": "text",
-                "text": "header"
-              }
-            ]
-          },
-          "body": {
-            "type": "box",
-            "layout": "vertical",
-            "contents": [
-              {
-                "type": "text",
-                "text": "body"
-              }
-            ]
-          },
-          "footer": {
-            "type": "box",
-            "layout": "vertical",
-            "contents": [
-              {
-                "type": "text",
-                "text": "footer"
-              }
-            ]
-          }
-        }],
+        type: "bubble",  // 定義一個 bubble 格式
+        header: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "text",
+              text: "header"
+            }
+          ]
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "text",
+              text: "body"
+            }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          contents: [
+            {
+              type: "text",
+              text: "footer"
+            }
+          ]
+        }
       }
     }
   );
