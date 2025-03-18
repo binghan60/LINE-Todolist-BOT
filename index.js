@@ -86,10 +86,27 @@ async function handleEvent(event) {
         layout: "vertical",
         contents: todoList.list.length > 0 
           ? todoList.list.map((todo, index) => ({
-              type: "text",
-              text: `${index + 1}. ${todo.todo} - ${todo.date.toISOString().split('T')[0]}`,  // 顯示條列格式
-              wrap: true,
-              size: "md"
+              type: "box",
+              layout: "horizontal",
+              contents: [
+                {
+                  type: "text",
+                  text: `${index + 1}. ${todo.todo} - ${todo.date.toISOString().split('T')[0]}`,  // 顯示條列格式
+                  wrap: true,
+                  size: "md",
+                  flex: 4
+                },
+                {
+                  type: "button",
+                  style: "primary",
+                  action: {
+                    type: "message",
+                    label: "刪除",
+                    text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
+                  },
+                  flex: 1
+                }
+              ]
             }))
           : [{
               type: "text",
