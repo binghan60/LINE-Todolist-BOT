@@ -83,7 +83,7 @@ async function handleEvent(event) {
       body: {
         type: "box",
         layout: "vertical",
-        contents: todoList.list.length > 0 
+        contents: todoList.list.length > 0
           ? todoList.list.map((todo, index) => ({
               type: "box",
               layout: "horizontal",
@@ -93,7 +93,8 @@ async function handleEvent(event) {
                   text: `${index + 1}. ${todo.todo}`,  // 顯示待辦事項，縮小字體
                   wrap: true,
                   size: "sm",  // 縮小字體
-                  flex: 4
+                  flex: 4,
+                  align: "start"  // 調整文字垂直對齊
                 },
                 {
                   type: "button",
@@ -104,7 +105,9 @@ async function handleEvent(event) {
                     label: "X",  // 顯示紅色的 X
                     text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
                   },
-                  flex: 1
+                  flex: 1,
+                  height: "sm",  // 設定按鈕的高度為較小
+                  align: "center"  // 將按鈕垂直置中
                 }
               ]
             }))
@@ -131,7 +134,8 @@ async function handleEvent(event) {
         ]
       }
     }
-  };
+  }
+  
   const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
     replyToken: event.replyToken,
