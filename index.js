@@ -7,7 +7,14 @@ const app = express();
 app.use(express.json());
 
 // 連接 MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB 連線成功'))
+  .catch((err) => console.error('MongoDB 連線失敗:', err));
+
 const Todo = mongoose.model('Todo', {
   userId: String,
   text: String,
