@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import line from '@line/bot-sdk';
+import * as line from '@line/bot-sdk'; // 修改這行
 
+dotenv.config();
 const app = express();
 app.use(express.json());
 
-dotenv.config();
 // 連接 MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
