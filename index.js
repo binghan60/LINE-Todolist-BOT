@@ -53,6 +53,7 @@ async function handleEvent(event) {
     await newUser.save()
   }
   let todoList = await Todo.findOne({ userLineId: userId })
+  const newTodo = event.message.text.trim();
   if (todoList === null) {
     todoList = new Todo({
       userId,
