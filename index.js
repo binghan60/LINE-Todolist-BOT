@@ -3,6 +3,7 @@ import express from 'express'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import User from './models/userSchema.js';
+import Todo from './models/todoSchema.js';
 
 dotenv.config();
 const config = {
@@ -46,16 +47,26 @@ async function handleEvent(event) {
   if (user === null) {
     const newUser = new User({
       userLineId: userId,
-      userName: profile.displayName
+      userName: profile.displayName,
+      avatar: profile.pictureUrl
     })
     await newUser.save()
   }
+  let todoList = await Todo.findOne({ userId });
 
+  if (!todoList) {
+    todoList = new Todo({
+      userId,
+      list: [{ todo: newTodo }]
+    });
+  } else {
+    todoList.list.push({ todo: newTodo });
+  }
+  await todoList.save();
 
-  const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [echo],
+    messages: [todoList.list.map((item, index) => index + "." + item.todo)],
   });
 }
 

@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
     {
-        userLineId:{type:String, require:true ,unique: true},
+        userLineId: { type: String, require: true, unique: true },
         userName: { type: String },
+        avatar: { type: String }
     },
     {
         timestamps: true,
