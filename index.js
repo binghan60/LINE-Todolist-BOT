@@ -1,14 +1,16 @@
 import * as line from '@line/bot-sdk'
 import express from 'express'
-
+import dotenv from 'dotenv';
 // create LINE SDK config from env variables
+
+dotenv.config();
 const config = {
-  channelSecret: process.env.CHANNEL_SECRET,
+  channelSecret: process.env.LINE_CHANNEL_SECRET,
 };
 
 // create LINE SDK client
 const client = new line.messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
 });
 
 // create Express app
