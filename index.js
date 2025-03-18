@@ -64,7 +64,7 @@ async function handleEvent(event) {
   }
   await todoList.save();
   console.log(todoList)
-  const flexMessage = {
+  const flexMessage ={
     type: "flex",
     altText: "待辦事項列表",  // 提供一個可替代的文字訊息
     contents: {
@@ -91,17 +91,18 @@ async function handleEvent(event) {
               contents: [
                 {
                   type: "text",
-                  text: `${index + 1}. ${todo.todo} - ${todo.date.toISOString().split('T')[0]}`,  // 顯示條列格式
+                  text: `${index + 1}. ${todo.todo}`,  // 顯示待辦事項，縮小字體
                   wrap: true,
-                  size: "md",
+                  size: "sm",  // 縮小字體
                   flex: 4
                 },
                 {
                   type: "button",
-                  style: "primary",
+                  style: "link",  // 使用 link 按鈕，顯示為紅色 X
+                  color: "#ff5555",  // 紅色
                   action: {
                     type: "message",
-                    label: "刪除",
+                    label: "❌",  // 顯示紅色的 X
                     text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
                   },
                   flex: 1
