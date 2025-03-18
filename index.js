@@ -48,12 +48,21 @@ async function handleEvent(event) {
     const newUser = new User({
       userLineId: userId,
       userName: profile.displayName,
-      avatar:profile.pictureUrl
+      avatar: profile.pictureUrl
     })
     await newUser.save()
   }
-  const todoList = await Todo.find({userLineId:userId})
-console.log(todoList)
+  let todoList = await Todo.findOne({ userLineId: userId })
+  if (todoList === null) {
+    todoList = new Todo({
+      userId: userObjectId,
+      list: [{ todo: newTodo }]
+    });
+  } else {
+    todoList.list.push({ todo: newTodo });
+  }
+  await todoList.save();
+  console.log(todoList)
 
   const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
