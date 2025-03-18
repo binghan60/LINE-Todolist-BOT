@@ -21,10 +21,6 @@ const lineConfig = {
 };
 const client = new line.Client(lineConfig);
 
-app.get("/",async(req,res)=>{
-  res.json("LINE BOT SERVER")
-})
-
 app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
   const events = req.body.events;
   for (let event of events) {
@@ -69,6 +65,5 @@ function replyText(replyToken, text) {
   return client.replyMessage(replyToken, { type: 'text', text });
 }
 
-app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
-
+// 不要使用 app.listen()
 module.exports = app;
