@@ -1,49 +1,80 @@
-import * as line from '@line/bot-sdk'
-import express from 'express'
+import * as line from '@line/bot-sdk';
+import express from 'express';
 import dotenv from 'dotenv';
-// create LINE SDK config from env variables
+import mongoose from 'mongoose';
 
 dotenv.config();
-const config = {
+
+// MongoDB 設定與連接
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB 連線成功'))
+  .catch((err) => console.error('MongoDB 連線失敗:', err));
+
+const Todo = mongoose.model('Todo', {
+  userId: String,
+  text: String,
+  done: Boolean,
+});
+
+// LINE 設定
+const lineConfig = {
   channelSecret: process.env.LINE_CHANNEL_SECRET,
+  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
 };
 
-// create LINE SDK client
-const client = new line.messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
-});
+const client = new line.Client(lineConfig);
 
 // create Express app
-// about Express itself: https://expressjs.com/
 const app = express();
+app.use(express.json());
 
-// register a webhook handler with middleware
-// about the middleware, please refer to doc
-app.post('/webhook', line.middleware(config), (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
+// webhook 處理
+app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
+  const events = req.body.events;
+  for (let event of events) {
+    if (event.type === 'message' && event.message.type === 'text') {
+      await handleTextMessage(event);
+    }
+  }
+  res.sendStatus(200);
 });
 
-// event handler
-function handleEvent(event) {
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
-    return Promise.resolve(null);
+// 處理文本訊息
+async function handleTextMessage(event) {
+  const userId = event.source.userId;
+  const message = event.message.text.trim();
+
+  if (message.startsWith('新增 ')) {
+    const text = message.replace('新增 ', '');
+    await Todo.create({ userId, text, done: false });
+    return replyText(event.replyToken, `已新增: ${text}`);
   }
 
-  // create an echoing text message
-  const echo = { type: 'text', text: event.message.text };
+  if (message === '清單') {
+    const todos = await Todo.find({ userId, done: false });
+    const list = todos.map((t, i) => `${i + 1}. ${t.text}`).join('\n') || '目前沒有待辦事項';
+    return replyText(event.replyToken, `你的待辦事項:\n${list}`);
+  }
 
-  // use reply API
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [echo],
-  });
+  if (message.startsWith('完成 ')) {
+    const index = parseInt(message.replace('完成 ', '')) - 1;
+    const todos = await Todo.find({ userId, done: false });
+    if (todos[index]) {
+      await Todo.findByIdAndUpdate(todos[index]._id, { done: true });
+      return replyText(event.replyToken, `已完成: ${todos[index].text}`);
+    } else {
+      return replyText(event.replyToken, `找不到對應的待辦事項`);
+    }
+  }
+
+  return replyText(event.replyToken, '請輸入「新增 xxx」、「清單」、「完成 x」');
+}
+
+// 回覆訊息
+function replyText(replyToken, text) {
+  return client.replyMessage(replyToken, { type: 'text', text });
 }
 
 // listen on port
