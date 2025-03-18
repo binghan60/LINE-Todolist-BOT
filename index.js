@@ -5,12 +5,10 @@ async function handleEvent(event) {
       messages: [{ type: 'text', text: "笨豬" }],
     });
   }
-
   const userLineId = event.source.userId;
   const profile = await client.getProfile(userLineId);
   const user = await User.findOne({ userLineId });
 
-  // 如果沒有該用戶資料，就創建一個新用戶
   if (user === null) {
     const newUser = new User({
       userLineId,
@@ -20,69 +18,79 @@ async function handleEvent(event) {
     await newUser.save();
   }
 
-  // 查找該用戶的待辦清單
-  let todoList = await Todo.findOne({ userLineId });
   const newTodo = event.message.text.trim();
+  let todoList = await Todo.findOne({ userLineId });
 
-  // 如果沒有待辦清單，則創建一個新的待辦清單
   if (todoList === null) {
     todoList = new Todo({
       userLineId,
       list: [{ todo: newTodo }]
     });
   } else {
-    // 否則把新的待辦項目推送到清單中
     todoList.list.push({ todo: newTodo });
   }
 
   await todoList.save();
 
-  // 構建 Flex Message 顯示待辦清單
-  const messages = todoList.list.map((item, index) => {
-    return {
-      type: 'box',
-      layout: 'horizontal',
+  // 建立 Flex Message 的內容
+  const flexMessage = {
+    type: "bubble",
+    header: {
+      type: "box",
+      layout: "vertical",
       contents: [
         {
-          type: 'text',
-          text: `${index + 1}. ${item.todo}`,
-          weight: 'bold',
-          size: 'md',
-          color: '#000000'
-        },
-        {
-          type: 'text',
-          text: `${item.date.toLocaleString()}`,
-          size: 'sm',
-          color: '#999999',
-          align: 'end'
-        },
-        {
-          type: 'button',
-          action: {
-            type: 'message',
-            label: '刪除',
-            text: `刪除待辦 ${index + 1}`, // 回傳用於刪除的指令
-          },
-          style: 'primary',
-          color: '#ff6f61',
-          margin: 'md'
+          type: "text",
+          text: "待辦事項列表",
+          weight: "bold",
+          size: "xl"
         }
       ]
-    };
-  });
-
-  // 包裹 Flex Message 顯示內容
-  const flexMessage = {
-    type: 'flex',
-    altText: '你的待辦清單',
-    contents: {
-      type: 'carousel',  // 如果有多個內容項目，使用 carousel
-      contents: messages   // 這裡是包含多個待辦項目的訊息
+    },
+    body: {
+      type: "box",
+      layout: "vertical",
+      contents: todoList.list.map((item, index) => ({
+        type: "box",
+        layout: "horizontal",
+        contents: [
+          {
+            type: "text",
+            text: `${index + 1}. ${item.todo}`,
+            size: "sm",
+            wrap: true
+          },
+          {
+            type: "button",
+            style: "primary",
+            action: {
+              type: "message",
+              label: `刪除 ${index + 1}`,
+              text: `刪除待辦 ${index + 1}`
+            }
+          }
+        ]
+      }))
+    },
+    footer: {
+      type: "box",
+      layout: "vertical",
+      contents: []
+    },
+    styles: {
+      header: {
+        backgroundColor: "#ffaaaa"
+      },
+      body: {
+        backgroundColor: "#aaffaa"
+      },
+      footer: {
+        backgroundColor: "#aaaaff"
+      }
     }
   };
 
-  // 回傳 Flex Message
+  // 回覆 Flex Message
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [flexMessage],
