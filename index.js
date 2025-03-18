@@ -2,6 +2,7 @@ import * as line from '@line/bot-sdk'
 import express from 'express'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import User from './models/userSchema';
 
 dotenv.config();
 const config = {
@@ -32,8 +33,7 @@ async function handleEvent(event) {
   const userId = event.source.userId;
   // const message = event.message.text.trim();
   const profile = await client.getProfile(userId);
-  console.log(profile)
-
+  await checkRegister(userId)
 
 
   const echo = { type: 'text', text: event.message.text };
@@ -43,7 +43,9 @@ async function handleEvent(event) {
   });
 }
 
-function checkRegister(id){
+async function checkRegister(id){
+  const user = await mongoose.find({userLineId:id})
+console.log(user)
 
 }
 

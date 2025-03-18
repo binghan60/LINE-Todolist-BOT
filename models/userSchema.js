@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
     {
-        name: { type: String, default: '' },
+        userLineId:{type:String, require:true ,unique: true},
+        name: { type: String },
     },
     {
         timestamps: true,
