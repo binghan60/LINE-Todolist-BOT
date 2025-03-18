@@ -11,20 +11,16 @@ const config = {
 const client = new line.messagingApi.MessagingApiClient({
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
 });
-
 const app = express();
-
 mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log('資料庫連線成功');
-    })
-    .catch((err) => {
-        console.log('資料庫連線失敗');
-        console.err(err.message);
-    });
-
-
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('資料庫連線成功');
+  })
+  .catch((err) => {
+    console.log('資料庫連線失敗');
+    console.err(err.message);
+  });
 
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
@@ -35,20 +31,25 @@ app.post('/webhook', line.middleware(config), (req, res) => {
       res.status(500).end();
     });
 });
-// event handler
+
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return client.replyMessage({
       replyToken: event.replyToken,
-      messages: [{type: 'text', text:"笨豬"}],
+      messages: [{ type: 'text', text: "笨豬" }],
     });
   }
   const userId = event.source.userId;
   // const message = event.message.text.trim();
   const profile = await client.getProfile(userId);
-  console.log("MMMM")
-
-  await checkRegister(userId)
+  const user = await User.findOne({ userLineId: userId })
+  if (user === null) {
+    const newUser = new User({
+      userLineId: userId,
+      userName: profile.displayName
+    })
+    await newUser.save()
+  }
 
 
   const echo = { type: 'text', text: event.message.text };
@@ -58,12 +59,7 @@ async function handleEvent(event) {
   });
 }
 
-async function checkRegister(id){
-  console.log("CHECK")
-  const user = await User.findOne({userLineId:id})
-  console.log({user})
 
-}
 
 // listen on port
 const port = process.env.PORT || 3000;

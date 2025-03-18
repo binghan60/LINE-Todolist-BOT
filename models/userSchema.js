@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema(
     {
         userLineId:{type:String, require:true ,unique: true},
-        name: { type: String },
+        userName: { type: String },
     },
     {
         timestamps: true,
