@@ -35,6 +35,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
+  console.log('Request signature:', req.headers['x-line-signature']);
   const events = req.body.events;
   for (let event of events) {
     if (event.type === 'message' && event.message.type === 'text') {
@@ -43,6 +44,7 @@ app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
   }
   res.sendStatus(200);
 });
+
 
 async function handleTextMessage(event) {
   const userId = event.source.userId;
