@@ -66,42 +66,48 @@ async function handleEvent(event) {
   console.log(todoList)
 
   const echo = { type: 'text', text: event.message.text };
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [{
-      "type": "bubble",
-      "header": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": "header"
+  return client.replyMessage(
+    {
+      type: "flex",
+      altText: "待辦事項列表",  // 必須提供 altText，這是非 Flex 支援的環境會看到的訊息
+      contents: {
+        replyToken: event.replyToken,
+        messages: [{
+          "type": "bubble",
+          "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "header"
+              }
+            ]
+          },
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "body"
+              }
+            ]
+          },
+          "footer": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "footer"
+              }
+            ]
           }
-        ]
-      },
-      "body": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": "body"
-          }
-        ]
-      },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": "footer"
-          }
-        ]
+        }],
       }
-    }],
-  });
+    }
+  );
 }
 
 
