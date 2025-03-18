@@ -1,11 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const line = require('@line/bot-sdk');
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import line from '@line/bot-sdk';
 
 const app = express();
 app.use(express.json());
 
+dotenv.config();
 // 連接 MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -29,7 +30,7 @@ const lineConfig = {
 const client = new line.Client(lineConfig);
 
 app.get('/', async (req, res) => {
-  res.status.json('LINE BOT API');
+  res.json('LINE BOT API');
 });
 
 app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
@@ -77,4 +78,4 @@ function replyText(replyToken, text) {
 }
 
 // 不要使用 app.listen()
-module.exports = app;
+export default app;
