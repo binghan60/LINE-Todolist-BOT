@@ -33,6 +33,8 @@ app.post('/webhook', line.middleware(config), (req, res) => {
     });
 });
 
+import mongoose from 'mongoose';
+
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return client.replyMessage({
@@ -40,35 +42,53 @@ async function handleEvent(event) {
       messages: [{ type: 'text', text: "笨豬" }],
     });
   }
+
   const userId = event.source.userId;
-  // const message = event.message.text.trim();
+  const newTodo = event.message.text.trim();
+
+  // 取得使用者資訊
   const profile = await client.getProfile(userId);
-  const user = await User.findOne({ userLineId: new mongoose.Types.ObjectId(userId) })
-  if (user === null) {
-    const newUser = new User({
+
+  // 確保使用者存在
+  let user = await User.findOne({ userLineId: userId });
+  if (!user) {
+    user = new User({
       userLineId: userId,
       userName: profile.displayName,
       avatar: profile.pictureUrl
-    })
-    await newUser.save()
+    });
+    await user.save();
   }
-  let todoList = await Todo.findOne({ userId });
+
+  // **修正查詢 Todo 的 userId 型別**
+  const userObjectId = new mongoose.Types.ObjectId(user._id);
+
+  let todoList = await Todo.findOne({ userId: userObjectId });
 
   if (!todoList) {
+    // 沒有就建立新的
     todoList = new Todo({
-      userId,
+      userId: userObjectId,
       list: [{ todo: newTodo }]
     });
   } else {
+    // 已有就 push 新的 todo
     todoList.list.push({ todo: newTodo });
   }
+
+  // 儲存資料
   await todoList.save();
 
+  // 回傳訊息
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [todoList.list.map((item, index) => index + "." + item.todo)],
+    messages: [{
+      type: 'text',
+      text: todoList.list.map((item, index) => `${index + 1}. ${item.todo}`).join("\n")
+    }]
   });
 }
+
 
 
 
