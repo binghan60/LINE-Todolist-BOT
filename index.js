@@ -68,49 +68,51 @@ async function handleEvent(event) {
     type: "flex",
     altText: "待辦事項列表",  // 提供一個可替代的文字訊息
     contents: {
-      type: "carousel",  // 如果你有多個 bubble，可以用 carousel 顯示
-      contents: todoList.list.map(todo => ({
-        type: "bubble",  // 定義一個 bubble 格式
-        header: {
-          type: "box",
-          layout: "vertical",
-          contents: [
-            {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "待辦事項",  // 標題
+            weight: "bold",
+            size: "lg"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: todoList.list.length > 0 
+          ? todoList.list.map((todo, index) => ({
               type: "text",
-              text: `待辦事項：${todo.todo}`,  // 顯示待辦事項內容
-              weight: "bold",
-              size: "lg"
-            }
-          ]
-        },
-        body: {
-          type: "box",
-          layout: "vertical",
-          contents: [
-            {
+              text: `${index + 1}. ${todo.todo} - ${todo.date.toISOString().split('T')[0]}`,  // 顯示條列格式
+              wrap: true,
+              size: "md"
+            }))
+          : [{
               type: "text",
-              text: `日期: ${todo.date.toISOString().split('T')[0]}`,  // 顯示日期
-              size: "sm",
-              color: "#AAAAAA"
+              text: "目前沒有待辦事項",
+              wrap: true,
+              size: "md"
+            }]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            action: {
+              type: "message",
+              label: "新增待辦事項",
+              text: "新增待辦事項"  // 用戶可以點擊這個按鈕來新增待辦事項
             }
-          ]
-        },
-        footer: {
-          type: "box",
-          layout: "vertical",
-          contents: [
-            {
-              type: "button",
-              style: "primary",
-              action: {
-                type: "message",
-                label: "刪除",
-                text: `刪除 ${todo.todo}`  // 這個可以設定為刪除該項目的命令
-              }
-            }
-          ]
-        }
-      }))
+          }
+        ]
+      }
     }
   };
   const echo = { type: 'text', text: event.message.text };
