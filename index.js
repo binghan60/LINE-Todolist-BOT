@@ -55,7 +55,7 @@ async function handleEvent(event) {
   let todoList = await Todo.findOne({ userLineId: userId })
   if (todoList === null) {
     todoList = new Todo({
-      userId: userObjectId,
+      userId,
       list: [{ todo: newTodo }]
     });
   } else {
