@@ -41,21 +41,19 @@ async function handleEvent(event) {
     });
   }
   const userLineId = event.source.userId;
+  // const message = event.message.text.trim();
   const profile = await client.getProfile(userLineId);
-  const user = await User.findOne({ userLineId });
-
+  const user = await User.findOne({ userLineId })
   if (user === null) {
     const newUser = new User({
       userLineId,
       userName: profile.displayName,
       avatar: profile.pictureUrl
-    });
-    await newUser.save();
+    })
+    await newUser.save()
   }
-
+  let todoList = await Todo.findOne({ userLineId })
   const newTodo = event.message.text.trim();
-  let todoList = await Todo.findOne({ userLineId });
-
   if (todoList === null) {
     todoList = new Todo({
       userLineId,
@@ -64,74 +62,58 @@ async function handleEvent(event) {
   } else {
     todoList.list.push({ todo: newTodo });
   }
-
   await todoList.save();
+  console.log(todoList)
 
-  // 建立 Flex Message 的內容
-  const flexMessage = {
-    type: "bubble",
-    header: {
-      type: "box",
-      layout: "vertical",
-      contents: [
-        {
-          type: "text",
-          text: "待辦事項列表",
-          weight: "bold",
-          size: "xl"
-        }
-      ]
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      contents: todoList.list.map((item, index) => ({
-        type: "box",
-        layout: "horizontal",
-        contents: [
-          {
-            type: "text",
-            text: `${index + 1}. ${item.todo}`,
-            size: "sm",
-            wrap: true
-          },
-          {
-            type: "button",
-            style: "primary",
-            action: {
-              type: "message",
-              label: `刪除 ${index + 1}`,
-              text: `刪除待辦 ${index + 1}`
-            }
-          }
-        ]
-      }))
-    },
-    footer: {
-      type: "box",
-      layout: "vertical",
-      contents: []
-    },
-    styles: {
-      header: {
-        backgroundColor: "#ffaaaa"
-      },
-      body: {
-        backgroundColor: "#aaffaa"
-      },
-      footer: {
-        backgroundColor: "#aaaaff"
-      }
-    }
-  };
-
-  // 回覆 Flex Message
+  const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [flexMessage],
+    messages: [{
+      "type": "bubble",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "header"
+          }
+        ]
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "body"
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "footer"
+          }
+        ]
+      },
+      "styles": {
+        "header": {
+          "backgroundColor": "#ffaaaa"
+        },
+        "body": {
+          "backgroundColor": "#aaffaa"
+        },
+        "footer": {
+          "backgroundColor": "#aaaaff"
+        }
+      }
+    }],
   });
 }
-
 
 
 
