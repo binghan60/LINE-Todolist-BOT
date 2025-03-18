@@ -21,6 +21,10 @@ const lineConfig = {
 };
 const client = new line.Client(lineConfig);
 
+app.get("/",async(req,res)=>{
+  res.json("LINE BOT SERVER")
+})
+
 app.post('/webhook', line.middleware(lineConfig), async (req, res) => {
   const events = req.body.events;
   for (let event of events) {
