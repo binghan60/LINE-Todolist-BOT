@@ -105,7 +105,8 @@ async function handleEvent(event) {
                   text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
                 },
                 flex: 1,
-                height: "sm"
+                height: "sm",
+                align: "center"
               }
             ]
           }))
