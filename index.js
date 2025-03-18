@@ -56,7 +56,7 @@ async function handleEvent(event) {
   const newTodo = event.message.text.trim();
   if (todoList === null) {
     todoList = new Todo({
-      userLineId:userId,
+      userLineId,
       list: [{ todo: newTodo }]
     });
   } else {
