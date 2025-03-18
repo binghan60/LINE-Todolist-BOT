@@ -99,17 +99,6 @@ async function handleEvent(event) {
             "text": "footer"
           }
         ]
-      },
-      "styles": {
-        "header": {
-          "backgroundColor": "#ffaaaa"
-        },
-        "body": {
-          "backgroundColor": "#aaffaa"
-        },
-        "footer": {
-          "backgroundColor": "#aaaaff"
-        }
       }
     }],
   });
