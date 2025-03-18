@@ -101,7 +101,7 @@ async function handleEvent(event) {
                   color: "#ff5555",  // 紅色
                   action: {
                     type: "message",
-                    label: "❌",  // 顯示紅色的 X
+                    label: "X",  // 顯示紅色的 X
                     text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
                   },
                   flex: 1
