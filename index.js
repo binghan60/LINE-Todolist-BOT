@@ -64,14 +64,12 @@ async function handleEvent(event) {
   }
   await todoList.save();
   console.log(todoList)
-
-  const echo = { type: 'text', text: event.message.text };
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [{
-      type: "flex",  // 設定為 flex message 類型
-      altText: "待辦事項列表",  // 提供一個可替代的文字訊息
-      contents: {
+  const flexMessage = {
+    type: "flex",
+    altText: "待辦事項列表",  // 提供一個可替代的文字訊息
+    contents: {
+      type: "carousel",  // 如果你有多個 bubble，可以用 carousel 顯示
+      contents: todoList.list.map(todo => ({
         type: "bubble",  // 定義一個 bubble 格式
         header: {
           type: "box",
@@ -79,7 +77,9 @@ async function handleEvent(event) {
           contents: [
             {
               type: "text",
-              text: "header"
+              text: `待辦事項：${todo.todo}`,  // 顯示待辦事項內容
+              weight: "bold",
+              size: "lg"
             }
           ]
         },
@@ -89,7 +89,9 @@ async function handleEvent(event) {
           contents: [
             {
               type: "text",
-              text: "body"
+              text: `日期: ${todo.date.toISOString().split('T')[0]}`,  // 顯示日期
+              size: "sm",
+              color: "#AAAAAA"
             }
           ]
         },
@@ -98,13 +100,23 @@ async function handleEvent(event) {
           layout: "vertical",
           contents: [
             {
-              type: "text",
-              text: "footer"
+              type: "button",
+              style: "primary",
+              action: {
+                type: "message",
+                label: "刪除",
+                text: `刪除 ${todo.todo}`  // 這個可以設定為刪除該項目的命令
+              }
             }
           ]
         }
-      }
-    }],
+      }))
+    }
+  };
+  const echo = { type: 'text', text: event.message.text };
+  return client.replyMessage({
+    replyToken: event.replyToken,
+    messages: [flexMessage],
   });
 }
 
