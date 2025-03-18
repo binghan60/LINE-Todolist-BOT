@@ -63,7 +63,6 @@ async function handleEvent(event) {
     todoList.list.push({ todo: newTodo });
   }
   await todoList.save();
-  console.log(todoList)
   const flexMessage ={
     type: "flex",
     altText: "待辦事項列表",  // 提供一個可替代的文字訊息
