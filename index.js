@@ -56,7 +56,7 @@ async function handleEvent(event) {
   const newTodo = event.message.text.trim();
   if (todoList === null) {
     todoList = new Todo({
-      userLineId,
+      userLineId:userId,
       list: [{ todo: newTodo }]
     });
   } else {
@@ -66,9 +66,9 @@ async function handleEvent(event) {
   console.log(todoList)
 
   const echo = { type: 'text', text: event.message.text };
-  return client.replyMessage(
-    event.replyToken,  // 傳入 replyToken
-    {
+  return client.replyMessage({
+    replyToken: event.replyToken,
+    messages: [{
       type: "flex",  // 設定為 flex message 類型
       altText: "待辦事項列表",  // 提供一個可替代的文字訊息
       contents: {
@@ -104,8 +104,8 @@ async function handleEvent(event) {
           ]
         }
       }
-    }
-  );
+    }],
+  });
 }
 
 
