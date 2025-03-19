@@ -45,36 +45,6 @@ async function handleEvent(event) {
   const message = event.message.text.trim();
   const profile = await client.getProfile(userLineId);
   const user = await User.findOne({ userLineId })
-  if (user === null) {
-    const newUser = new User({
-      userLineId,
-      userName: profile.displayName,
-      avatar: profile.pictureUrl
-    })
-    await newUser.save()
-  }
-  if (message.split("-")[0] === deleteKeyword) {
-    const deleteTargetId = message.split("-")[1]
-    const deleteTarget = await Todo.findOne({ userLineId })
-    const todoIndex = deleteTarget.list.findIndex((todo) => todo._id.toString() === deleteTargetId);
-    deleteTarget.list.splice(todoIndex, 1);
-    await deleteTarget.save();
-    return client.replyMessage({
-      replyToken: event.replyToken,
-      messages: [flexMessage(deleteTarget)],
-    });
-  }
-  let todoList = await Todo.findOne({ userLineId })
-  const newTodo = event.message.text.trim();
-  if (todoList === null) {
-    todoList = new Todo({
-      userLineId,
-      list: [{ todo: newTodo }]
-    });
-  } else {
-    todoList.list.push({ todo: newTodo });
-  }
-  await todoList.save();
   const flexMessage = (data) => {
     return {
       type: "flex",
@@ -138,6 +108,37 @@ async function handleEvent(event) {
       }
     };
   }
+  if (user === null) {
+    const newUser = new User({
+      userLineId,
+      userName: profile.displayName,
+      avatar: profile.pictureUrl
+    })
+    await newUser.save()
+  }
+  if (message.split("-")[0] === deleteKeyword) {
+    const deleteTargetId = message.split("-")[1]
+    const deleteTarget = await Todo.findOne({ userLineId })
+    const todoIndex = deleteTarget.list.findIndex((todo) => todo._id.toString() === deleteTargetId);
+    deleteTarget.list.splice(todoIndex, 1);
+    await deleteTarget.save();
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [flexMessage(deleteTarget)],
+    });
+  }
+  let todoList = await Todo.findOne({ userLineId })
+  const newTodo = event.message.text.trim();
+  if (todoList === null) {
+    todoList = new Todo({
+      userLineId,
+      list: [{ todo: newTodo }]
+    });
+  } else {
+    todoList.list.push({ todo: newTodo });
+  }
+  await todoList.save();
+
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [flexMessage(todoList)],
