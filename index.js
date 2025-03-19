@@ -44,7 +44,7 @@ async function handleEvent(event) {
   const deleteKeyword = "[DELETE]"
   const message = event.message.text.trim();
   const profile = await client.getProfile(userLineId);
-  const user = await User.findOne({ userLineId })
+  let user = await User.findOne({ userLineId })
   const flexMessage = (data) => {
     return {
       type: "flex",
@@ -115,6 +115,7 @@ async function handleEvent(event) {
       avatar: profile.pictureUrl
     })
     await newUser.save()
+    user = newUser
   }
   if (message.split("-")[0] === deleteKeyword) {
     const deleteTargetId = message.split("-")[1]
