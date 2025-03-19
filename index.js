@@ -65,7 +65,7 @@ async function handleEvent(event) {
   await todoList.save();
   const flexMessage = {
     type: "flex",
-    altText: "待辦事項列表",  
+    altText: `待辦事項列表還有${todoList.list.length}項`,  
     contents: {
       type: "bubble",
       header: {
@@ -76,7 +76,7 @@ async function handleEvent(event) {
         contents: [
           {
             type: "text",
-            text: "待辦事項",
+            text: `${user.userName}的待辦事項列表`,
             weight: "bold",
             size: "md",
             align: "center"
@@ -93,7 +93,6 @@ async function handleEvent(event) {
             layout: "horizontal",
             alignItems: "center",
             spacing: "xs",
-            backgroundColor: "#e3f2fd",
             cornerRadius: "md",
             paddingAll: "sm",
             contents: [
