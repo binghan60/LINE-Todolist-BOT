@@ -70,13 +70,12 @@ async function handleEvent(event) {
           type: "box",
           layout: "vertical",
           spacing: "none",
-          contents: data.list.map((item, index) => {
+          contents: data.list.length>0 ? data.list.map((item, index) => {
             return {
               type: "box",
               layout: "horizontal",
               alignItems: "center",
               spacing: "xs",
-              cornerRadius: "md",
               paddingAll: "sm",
               contents: [
                 {
@@ -100,7 +99,12 @@ async function handleEvent(event) {
               ],
               height: "30px"
             }
-          }),
+          }) : [{
+            type: "text",
+            text: "目前沒有待辦事項",
+            wrap: true,
+            size: "sm"
+          }],
           margin: "none",
           offsetBottom: "none",
           paddingAll: "md"
