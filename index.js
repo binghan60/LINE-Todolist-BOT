@@ -71,7 +71,7 @@ async function handleEvent(event) {
       header: {
         type: "box",
         layout: "vertical",
-        paddingAll: "md",
+        paddingAll: "sm",
         contents: [
           {
             type: "text",
