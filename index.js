@@ -111,7 +111,7 @@ async function handleEvent(event) {
                 action: {
                   type: "message",
                   label: "X",
-                  text: `deleteKeyword${item._id}`
+                  text: `${deleteKeyword}-${item._id}`
                 },
                 flex: 1
               }
