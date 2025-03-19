@@ -87,8 +87,8 @@ async function handleEvent(event) {
         type: "box",
         layout: "vertical",
         spacing: "none",
-        contents: [
-          {
+        contents: todoList.list.map((x,index)=>{
+          return {
             type: "box",
             layout: "horizontal",
             alignItems: "center",
@@ -99,7 +99,7 @@ async function handleEvent(event) {
             contents: [
               {
                 type: "text",
-                text: "1. 買牛奶",
+                text: `${index+1}. ${x.todo}`,
                 wrap: true,
                 size: "sm",
                 flex: 4
@@ -117,39 +117,8 @@ async function handleEvent(event) {
               }
             ],
             height: "30px"
-          },
-          {
-            type: "box",
-            layout: "horizontal",
-            alignItems: "center",
-            spacing: "xs",
-            margin: "xs",
-            backgroundColor: "#e3f2fd",
-            cornerRadius: "md",
-            paddingAll: "sm",
-            contents: [
-              {
-                type: "text",
-                text: "2. 運動30分鐘",
-                wrap: true,
-                size: "sm",
-                flex: 4
-              },
-              {
-                type: "button",
-                style: "link",
-                color: "#ff5555",
-                action: {
-                  type: "message",
-                  label: "X",
-                  text: "delete:2"
-                },
-                flex: 1
-              }
-            ],
-            height: "30px"
           }
-        ],
+        }),
         margin: "none",
         offsetBottom: "none",
         paddingAll: "md"
