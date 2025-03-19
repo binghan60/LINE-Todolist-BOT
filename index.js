@@ -78,7 +78,8 @@ async function handleEvent(event) {
             weight: "bold",
             size: "sm"
           }
-        ]
+        ],
+        flex:1
       },
       body: {
         type: "box",
@@ -115,7 +116,8 @@ async function handleEvent(event) {
             text: "目前沒有待辦事項",
             wrap: true,
             size: "md"
-          }]
+          }],
+          flex:8
       }
     }
   };
