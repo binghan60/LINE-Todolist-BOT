@@ -37,7 +37,7 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return client.replyMessage({
       replyToken: event.replyToken,
-      messages: [{ type: 'text', text: "笨豬" }],
+      messages: [{ type: 'sticker', packageId: "789", stickerId: "10857" }],
     });
   }
   const userLineId = event.source.userId;
@@ -138,16 +138,11 @@ async function handleEvent(event) {
     todoList.list.push({ todo: message });
   }
   await todoList.save();
-  console.log("AAA")
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [flexMessage(todoList)],
   });
 }
-
-
-
-// listen on port
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`listening on ${port}`);
