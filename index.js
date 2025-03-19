@@ -106,7 +106,7 @@ async function handleEvent(event) {
           paddingAll: "md"
         }
       }
-    } : { type: "text", text: "目前沒有待辦事項" }
+    } : { type: "text", text: "太棒了，待辦事項都解決啦" }
   }
   if (user === null) {
     const newUser = new User({
