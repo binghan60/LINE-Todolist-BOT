@@ -34,7 +34,6 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 });
 
 async function handleEvent(event) {
-  const deleteKeyword = "[DELETE]"
   if (event.type !== 'message' || event.message.type !== 'text') {
     return client.replyMessage({
       replyToken: event.replyToken,
@@ -42,7 +41,8 @@ async function handleEvent(event) {
     });
   }
   const userLineId = event.source.userId;
-  // const message = event.message.text.trim();
+  const deleteKeyword = "[DELETE]"
+  const message = event.message.text.trim();
   const profile = await client.getProfile(userLineId);
   const user = await User.findOne({ userLineId })
   if (user === null) {
@@ -52,6 +52,17 @@ async function handleEvent(event) {
       avatar: profile.pictureUrl
     })
     await newUser.save()
+  }
+  if (message.split("-")[0] === deleteKeyword) {
+    const deleteTargetId = message.split("-")[1]
+    const deleteTarget = await Todo.findOne({ userLineId })
+    const todoIndex = deleteTarget.list.findIndex((todo) => todo._id.toString() === deleteTargetId);
+    deleteTarget.list.splice(todoIndex, 1);
+    await deleteTarget.save();
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [flexMessage(deleteTarget)],
+    });
   }
   let todoList = await Todo.findOne({ userLineId })
   const newTodo = event.message.text.trim();
@@ -64,70 +75,72 @@ async function handleEvent(event) {
     todoList.list.push({ todo: newTodo });
   }
   await todoList.save();
-  const flexMessage = {
-    type: "flex",
-    altText: `現在有${todoList.list.length}項待辦事項等你唷～快來看看有什麼需要處理的`,  
-    contents: {
-      type: "bubble",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#f0f0f0",
-        paddingAll: "sm",
-        contents: [
-          {
-            type: "text",
-            text: `${user.userName}的待辦事項列表`,
-            weight: "bold",
-            size: "md",
-            align: "center"
-          }
-        ]
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "none",
-        contents: todoList.list.map((item,index)=>{
-          return {
-            type: "box",
-            layout: "horizontal",
-            alignItems: "center",
-            spacing: "xs",
-            cornerRadius: "md",
-            paddingAll: "sm",
-            contents: [
-              {
-                type: "text",
-                text: `${index+1}. ${item.todo}`,
-                wrap: true,
-                size: "sm",
-                flex: 4
-              },
-              {
-                type: "button",
-                style: "link",
-                color: "#ff5555",
-                action: {
-                  type: "message",
-                  label: "X",
-                  text: `${deleteKeyword}-${item._id}`
+  const flexMessage = (data) => {
+    return {
+      type: "flex",
+      altText: `現在有${data.list.length}項待辦事項等你唷～快來看看有什麼需要處理的`,
+      contents: {
+        type: "bubble",
+        header: {
+          type: "box",
+          layout: "vertical",
+          backgroundColor: "#f0f0f0",
+          paddingAll: "sm",
+          contents: [
+            {
+              type: "text",
+              text: `${user.userName}的待辦事項列表`,
+              weight: "bold",
+              size: "md",
+              align: "center"
+            }
+          ]
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "none",
+          contents: data.list.map((item, index) => {
+            return {
+              type: "box",
+              layout: "horizontal",
+              alignItems: "center",
+              spacing: "xs",
+              cornerRadius: "md",
+              paddingAll: "sm",
+              contents: [
+                {
+                  type: "text",
+                  text: `${index + 1}. ${item.todo}`,
+                  wrap: true,
+                  size: "sm",
+                  flex: 4
                 },
-                flex: 1
-              }
-            ],
-            height: "30px"
-          }
-        }),
-        margin: "none",
-        offsetBottom: "none",
-        paddingAll: "md"
+                {
+                  type: "button",
+                  style: "link",
+                  color: "#ff5555",
+                  action: {
+                    type: "message",
+                    label: "X",
+                    text: `${deleteKeyword}-${item._id}`
+                  },
+                  flex: 1
+                }
+              ],
+              height: "30px"
+            }
+          }),
+          margin: "none",
+          offsetBottom: "none",
+          paddingAll: "md"
+        }
       }
-    }
-  };
+    };
+  }
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [flexMessage],
+    messages: [flexMessage(todoList)],
   });
 }
 
