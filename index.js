@@ -1,5 +1,5 @@
 import * as line from '@line/bot-sdk'
-import express from 'express'
+import express, { text } from 'express'
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import User from './models/userSchema.js';
@@ -46,7 +46,7 @@ async function handleEvent(event) {
   const profile = await client.getProfile(userLineId);
   let user = await User.findOne({ userLineId })
   const flexMessage = (data) => {
-    return {
+    return data.list.length > 0 ? {
       type: "flex",
       altText: `現在有${data.list.length}項待辦事項等你唷～快來看看有什麼需要處理的`,
       contents: {
@@ -70,12 +70,13 @@ async function handleEvent(event) {
           type: "box",
           layout: "vertical",
           spacing: "none",
-          contents: data.list.length>0 ? data.list.map((item, index) => {
+          contents: data.list.map((item, index) => {
             return {
               type: "box",
               layout: "horizontal",
               alignItems: "center",
               spacing: "xs",
+              cornerRadius: "md",
               paddingAll: "sm",
               contents: [
                 {
@@ -99,18 +100,13 @@ async function handleEvent(event) {
               ],
               height: "30px"
             }
-          }) : [{
-            type: "text",
-            text: "目前沒有待辦事項",
-            wrap: true,
-            size: "sm"
-          }],
+          }),
           margin: "none",
           offsetBottom: "none",
           paddingAll: "md"
         }
       }
-    };
+    } : { type: text, text: "目前沒有待辦事項" }
   }
   if (user === null) {
     const newUser = new User({
