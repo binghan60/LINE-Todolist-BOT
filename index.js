@@ -71,51 +71,88 @@ async function handleEvent(event) {
       header: {
         type: "box",
         layout: "vertical",
+        backgroundColor: "#f0f0f0",
+        paddingAll: "sm",
         contents: [
           {
             type: "text",
             text: "待辦事項",
             weight: "bold",
+            size: "md",
+            align: "center"
           }
-        ],
-        flex: 0
+        ]
       },
       body: {
         type: "box",
         layout: "vertical",
-        contents: todoList.list.length > 0
-          ? todoList.list.map((todo, index) => ({
+        spacing: "none",
+        contents: [
+          {
             type: "box",
             layout: "horizontal",
             alignItems: "center",
-            margin: "xs",
+            spacing: "xs",
+            backgroundColor: "#e3f2fd",
+            cornerRadius: "md",
+            paddingAll: "sm",
             contents: [
               {
                 type: "text",
-                text: `${index + 1}. ${todo.todo}`,  // 顯示待辦事項，縮小字體
+                text: "1. 買牛奶",
                 wrap: true,
-                size: "sm",  // 縮小字體
+                size: "sm",
                 flex: 4
               },
               {
                 type: "button",
-                style: "link",  // 使用 link 按鈕，顯示為紅色 X
-                color: "#ff5555",  // 紅色
+                style: "link",
+                color: "#ff5555",
                 action: {
                   type: "message",
-                  label: "X",  // 顯示紅色的 X
-                  text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
+                  label: "X",
+                  text: "delete:1"
                 },
-                flex: 1,
+                flex: 1
               }
-            ]
-          }))
-          : [{
-            type: "text",
-            text: "目前沒有待辦事項",
-            wrap: true,
-            size: "md"
-          }],
+            ],
+            height: "30px"
+          },
+          {
+            type: "box",
+            layout: "horizontal",
+            alignItems: "center",
+            spacing: "xs",
+            margin: "xs",
+            backgroundColor: "#e3f2fd",
+            cornerRadius: "md",
+            paddingAll: "sm",
+            contents: [
+              {
+                type: "text",
+                text: "2. 運動30分鐘",
+                wrap: true,
+                size: "sm",
+                flex: 4
+              },
+              {
+                type: "button",
+                style: "link",
+                color: "#ff5555",
+                action: {
+                  type: "message",
+                  label: "X",
+                  text: "delete:2"
+                },
+                flex: 1
+              }
+            ],
+            height: "30px"
+          }
+        ],
+        margin: "none",
+        offsetBottom: "none",
+        paddingAll: "md"
       }
     }
   };
