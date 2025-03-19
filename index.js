@@ -88,6 +88,7 @@ async function handleEvent(event) {
             type: "box",
             layout: "horizontal",
             alignItems: "center",
+            margin: "md",
             contents: [
               {
                 type: "text",
