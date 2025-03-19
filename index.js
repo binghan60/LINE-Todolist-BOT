@@ -87,7 +87,7 @@ async function handleEvent(event) {
           ? todoList.list.map((todo, index) => ({
             type: "box",
             layout: "horizontal",
-            "alignItems": "center",
+            alignItems: "center",
             contents: [
               {
                 type: "text",
