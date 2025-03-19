@@ -65,14 +65,12 @@ async function handleEvent(event) {
   await todoList.save();
   const flexMessage = {
     type: "flex",
-    altText: "待辦事項列表",  
+    altText: "待辦事項列表",
     contents: {
       type: "bubble",
       header: {
         type: "box",
         layout: "vertical",
-        flex: 0,
-        height: "auto",
         contents: [
           {
             type: "text",
@@ -87,40 +85,42 @@ async function handleEvent(event) {
         layout: "vertical",
         contents: todoList.list.length > 0
           ? todoList.list.map((todo, index) => ({
-            type: "box",
-            layout: "horizontal",
-            alignItems: "center",
-            margin: "xs",
-            contents: [
-              {
-                type: "text",
-                text: `${index + 1}. ${todo.todo}`,  // 顯示待辦事項，縮小字體
-                wrap: true,
-                size: "sm",  // 縮小字體
-                flex: 4
-              },
-              {
-                type: "button",
-                style: "link",  // 使用 link 按鈕，顯示為紅色 X
-                color: "#ff5555",  // 紅色
-                action: {
-                  type: "message",
-                  label: "X",  // 顯示紅色的 X
-                  text: `delete:${index}`  // 點擊刪除按鈕時發送 `delete:index` 訊息
+              type: "box",
+              layout: "horizontal",
+              alignItems: "center",
+              margin: "xs",
+              contents: [
+                {
+                  type: "text",
+                  text: `${index + 1}. ${todo.todo}`,
+                  wrap: true,
+                  size: "sm",
+                  flex: 4
                 },
-                flex: 1,
-              }
-            ]
-          }))
+                {
+                  type: "button",
+                  style: "link",
+                  color: "#ff5555",
+                  action: {
+                    type: "message",
+                    label: "X",
+                    text: `delete:${index}`
+                  },
+                  flex: 1
+                }
+              ],
+              height: "30px"
+            }))
           : [{
-            type: "text",
-            text: "目前沒有待辦事項",
-            wrap: true,
-            size: "md"
-          }],
+              type: "text",
+              text: "目前沒有待辦事項",
+              wrap: true,
+              size: "md"
+            }],
       }
     }
   };
+  
   const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
     replyToken: event.replyToken,
