@@ -76,7 +76,7 @@ async function handleEvent(event) {
             type: "text",
             text: "待辦事項",  // 標題
             weight: "bold",
-            size: "lg"
+            size: "xs"
           }
         ]
       },
