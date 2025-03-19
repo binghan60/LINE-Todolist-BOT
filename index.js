@@ -34,6 +34,7 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 });
 
 async function handleEvent(event) {
+  const deleteKeyword = "[DELETE]"
   if (event.type !== 'message' || event.message.type !== 'text') {
     return client.replyMessage({
       replyToken: event.replyToken,
@@ -65,7 +66,7 @@ async function handleEvent(event) {
   await todoList.save();
   const flexMessage = {
     type: "flex",
-    altText: `待辦事項列表還有${todoList.list.length}項`,  
+    altText: `現在有${todoList.list.length}項待辦事項等你唷～快來看看有什麼需要處理的`,  
     contents: {
       type: "bubble",
       header: {
@@ -110,7 +111,7 @@ async function handleEvent(event) {
                 action: {
                   type: "message",
                   label: "X",
-                  text: "delete:1"
+                  text: `deleteKeyword${item._id}`
                 },
                 flex: 1
               }
@@ -124,7 +125,6 @@ async function handleEvent(event) {
       }
     }
   };
-  const echo = { type: 'text', text: event.message.text };
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [flexMessage],
