@@ -88,7 +88,7 @@ async function handleEvent(event) {
         type: "box",
         layout: "vertical",
         spacing: "none",
-        contents: todoList.list.map((x,index)=>{
+        contents: todoList.list.map((item,index)=>{
           return {
             type: "box",
             layout: "horizontal",
@@ -99,7 +99,7 @@ async function handleEvent(event) {
             contents: [
               {
                 type: "text",
-                text: `${index+1}. ${x.todo}`,
+                text: `${index+1}. ${item.todo}`,
                 wrap: true,
                 size: "sm",
                 flex: 4
