@@ -128,17 +128,16 @@ async function handleEvent(event) {
     });
   }
   let todoList = await Todo.findOne({ userLineId })
-  const newTodo = event.message.text.trim();
   if (todoList === null) {
     todoList = new Todo({
       userLineId,
-      list: [{ todo: newTodo }]
+      list: [{ todo: message }]
     });
   } else {
-    todoList.list.push({ todo: newTodo });
+    todoList.list.push({ todo: message });
   }
   await todoList.save();
-
+  console.log("AAA")
   return client.replyMessage({
     replyToken: event.replyToken,
     messages: [flexMessage(todoList)],
