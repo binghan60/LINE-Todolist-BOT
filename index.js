@@ -85,7 +85,7 @@ async function handleEvent(event) {
         layout: "vertical",
         contents: todoList.list.length > 0
           ? todoList.list.map((todo, index) => ({
-            type: "bubble",
+            type: "box",
             layout: "horizontal",
             "alignItems": "center",
             contents: [
