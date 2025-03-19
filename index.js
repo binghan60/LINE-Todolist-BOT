@@ -71,12 +71,13 @@ async function handleEvent(event) {
       header: {
         type: "box",
         layout: "vertical",
+        flex: 0,
+        height: "auto",
         contents: [
           {
             type: "text",
             text: "待辦事項",
             weight: "bold",
-            size: "sm"
           }
         ],
         flex: 0
