@@ -71,7 +71,6 @@ async function handleEvent(event) {
       header: {
         type: "box",
         layout: "vertical",
-        paddingAll: "sm",
         contents: [
           {
             type: "text",
@@ -80,6 +79,7 @@ async function handleEvent(event) {
             size: "sm"
           }
         ],
+        flex: 0
       },
       body: {
         type: "box",
